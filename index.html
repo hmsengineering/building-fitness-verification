@@ -4,73 +4,106 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Building Fitness Certificate Verification</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-* { box-sizing: border-box; }
-body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: #f4f7fb; color: #1f2937; }
-.header { background: linear-gradient(135deg, #123c69, #0b6e4f); color: white; padding: 45px 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-.header h1 { margin: 0; font-size: 32px; }
-.header p { margin: 8px 0 0; font-size: 15px; opacity: 0.9; }
-.container { max-width: 800px; margin: 35px auto; padding: 0 20px; }
-.card { background: white; border-radius: 14px; padding: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.08); }
-.card h2 { margin-top: 0; color: #123c69; font-size: 20px; }
-#searchBox { width: 100%; padding: 13px 16px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 15px; margin-bottom: 20px; }
-.document { border: 1px solid #e5e7eb; border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; background: #fafbfc; display: block; text-decoration: none; color: inherit; transition: box-shadow 0.15s; }
-.document:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.08); border-color: #c7d2e0; }
-.document-title { font-weight: bold; color: #123c69; }
-.document p { margin: 4px 0 0; color: #6b7280; font-size: 14px; }
-.footer { text-align: center; margin-top: 30px; padding: 25px 15px; color: #555; font-size: 14px; }
-.footer strong { color: #123c69; font-size: 16px; }
+:root{
+  --navy:#0d2b4e; --green:#0b6e4f; --accent:#1463e9;
+  --ink:#1f2937; --muted:#6b7280; --line:#e6e9ee; --bg:#eef2f8;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Inter',Arial,sans-serif;color:var(--ink);
+  background:
+    radial-gradient(circle at 15% 0%, #f3f7ff 0%, transparent 45%),
+    radial-gradient(circle at 100% 10%, #eefaf3 0%, transparent 40%),
+    var(--bg);
+  min-height:100vh;
+}
+.header{background:linear-gradient(135deg,var(--navy),var(--green));color:#fff;padding:52px 20px 64px;text-align:center;}
+.seal{width:60px;height:60px;margin:0 auto 14px;background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.55);border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.header h1{margin:0;font-size:28px;font-weight:800;}
+.header p{margin:8px 0 0;font-size:14px;opacity:.85;letter-spacing:.5px;text-transform:uppercase;}
+.container{max-width:720px;margin:-38px auto 40px;padding:0 20px;}
+.card{background:#fff;border-radius:18px;padding:34px;box-shadow:0 20px 45px -20px rgba(13,43,78,0.35);border:1px solid var(--line);}
+.card h2{margin:0 0 6px;color:var(--navy);font-size:19px;font-weight:800;}
+.card .sub{color:var(--muted);font-size:13.5px;margin-bottom:20px;}
+.searchwrap{position:relative;margin-bottom:22px;}
+.searchwrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);}
+#searchBox{width:100%;padding:13px 16px 13px 42px;border:1px solid #d1d5db;border-radius:10px;font-size:15px;font-family:inherit;}
+#searchBox:focus{outline:2px solid #cddcfa;border-color:var(--accent);}
+.document{border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:12px;background:#fbfcfe;display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;transition:box-shadow .15s, transform .15s;}
+.document:hover{box-shadow:0 8px 20px -10px rgba(13,43,78,0.25);transform:translateY(-1px);border-color:#c7d2e0;}
+.doc-icon{width:42px;height:42px;border-radius:10px;background:#eaf1ff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.doc-text{flex:1;}
+.document-title{font-weight:700;color:var(--navy);font-size:15px;}
+.document p{margin:3px 0 0;color:var(--muted);font-size:13px;}
+.footer{text-align:center;margin-top:26px;padding:10px 15px;color:var(--muted);font-size:13px;}
+.footer .sig{border-top:1px solid var(--line);max-width:280px;margin:0 auto 12px;padding-top:14px;}
+.footer strong{display:block;color:var(--navy);font-size:15px;margin-bottom:2px;}
 </style>
 </head>
 <body>
 <div class="header">
-    <h1>Building Fitness Certificate</h1>
-    <p>Official Certificate Verification System</p>
+  <div class="seal">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 2l7 3v6c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V5l7-3z" stroke="#fff" stroke-width="1.6" fill="rgba(255,255,255,0.15)"/><path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+  <h1>Building Fitness Certificate</h1>
+  <p>Official Certificate Verification System</p>
 </div>
 <div class="container">
-    <div class="card">
-        <h2>Search a Certificate</h2>
-        <input type="text" id="searchBox" placeholder="Search by school name or certificate number...">
-        <div id="results">Loading…</div>
+  <div class="card">
+    <h2>Search a Certificate</h2>
+    <div class="sub">Search by school name or certificate number</div>
+    <div class="searchwrap">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#9aa4b2" stroke-width="2"/><path d="M21 21l-4-4" stroke="#9aa4b2" stroke-width="2" stroke-linecap="round"/></svg>
+      <input type="text" id="searchBox" placeholder="e.g. System of Smart Scholars or BFC-2026-001">
     </div>
-    <div class="footer">
-        Official Building Fitness Certificate Verification System<br><br>
-        <strong>Verified by</strong><br>
-        Engr. Hassan Mehmood Subhani<br>
-        PEC No. Civil/56341
+    <div id="results">Loading…</div>
+  </div>
+  <div class="footer">
+    <div class="sig">
+      <strong>Engr. Hassan Mehmood Subhani</strong>
+      PEC No. Civil/56341
     </div>
+    Official Building Fitness Certificate Verification System
+  </div>
 </div>
 
 <script>
 let allSchools = [];
 
 async function init() {
-    const res = await fetch('./data/schools.json');
-    allSchools = await res.json();
-    renderResults(allSchools);
+  const res = await fetch('./data/schools.json');
+  allSchools = await res.json();
+  renderResults(allSchools);
 }
 
 function renderResults(list) {
-    const results = document.getElementById('results');
-    if (list.length === 0) {
-        results.innerHTML = '<p style="color:#6b7280;">No certificates found.</p>';
-        return;
-    }
-    results.innerHTML = list.map(s => `
-        <a class="document" href="./verify/?school=${s.slug}">
-            <div class="document-title">🏫 ${s.schoolName}</div>
-            <p>Certificate No: ${s.certificateNumber}</p>
-        </a>
-    `).join('');
+  const results = document.getElementById('results');
+  if (list.length === 0) {
+    results.innerHTML = '<p style="color:#6b7280;">No certificates found.</p>';
+    return;
+  }
+  results.innerHTML = list.map(s => `
+    <a class="document" href="./verify/?school=${s.slug}">
+      <div class="doc-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6" stroke="#1463e9" stroke-width="1.6"/></svg>
+      </div>
+      <div class="doc-text">
+        <div class="document-title">${s.schoolName}</div>
+        <p>Certificate No: ${s.certificateNumber}</p>
+      </div>
+    </a>
+  `).join('');
 }
 
 document.getElementById('searchBox').addEventListener('input', e => {
-    const q = e.target.value.toLowerCase();
-    const filtered = allSchools.filter(s =>
-        s.schoolName.toLowerCase().includes(q) ||
-        s.certificateNumber.toLowerCase().includes(q)
-    );
-    renderResults(filtered);
+  const q = e.target.value.toLowerCase();
+  const filtered = allSchools.filter(s =>
+    s.schoolName.toLowerCase().includes(q) ||
+    s.certificateNumber.toLowerCase().includes(q)
+  );
+  renderResults(filtered);
 });
 
 init();
