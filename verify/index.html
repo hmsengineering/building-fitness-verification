@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Certificate Verification</title>
+<style>
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f7fb;
+    color: #1f2937;
+}
+.header {
+    background: linear-gradient(135deg, #123c69, #0b6e4f);
+    color: white;
+    padding: 40px 20px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.header h1 { margin: 0; font-size: 30px; letter-spacing: 0.5px; }
+.header p { margin: 8px 0 0; font-size: 15px; opacity: 0.9; }
+.container { max-width: 900px; margin: 35px auto; padding: 0 20px; }
+.card {
+    background: white;
+    border-radius: 14px;
+    padding: 30px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+.verified {
+    text-align: center;
+    color: #07864b;
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    padding: 14px;
+    background: #eafaf1;
+    border-radius: 10px;
+    border: 1px solid #b9ecd0;
+}
+.not-verified {
+    text-align: center;
+    color: #b42318;
+    font-size: 22px;
+    font-weight: bold;
+    padding: 14px;
+    background: #fdecea;
+    border-radius: 10px;
+    border: 1px solid #f5c2be;
+}
+.info { border-top: 1px solid #eee; padding: 14px 0; }
+.info strong { display: block; font-size: 13px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.documents { margin-top: 30px; }
+.documents h2 { color: #123c69; margin-bottom: 20px; font-size: 20px; border-bottom: 2px solid #eef2f7; padding-bottom: 10px; }
+.document { border: 1px solid #e5e7eb; border-radius: 10px; padding: 18px; margin-bottom: 15px; background: #fafbfc; }
+.document-title { font-weight: bold; margin-bottom: 12px; }
+.button { display: inline-block; background: #1463e9; color: white; padding: 11px 18px; border-radius: 7px; text-decoration: none; font-weight: bold; margin-right: 10px; margin-top: 4px; }
+.button:hover { background: #0d4fc2; }
+.button.secondary { background: #eef2f7; color: #123c69; }
+.button.secondary:hover { background: #dde5ee; }
+.footer { text-align: center; margin-top: 30px; padding: 25px 15px; color: #555; font-size: 14px; }
+.footer strong { color: #123c69; font-size: 16px; }
+.backlink { display: block; text-align: center; margin-top: 20px; color: #123c69; font-size: 13px; text-decoration: none; }
+.backlink:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="header">
+    <h1>Building Fitness Certificate</h1>
+    <p>Official Certificate Verification System</p>
+</div>
+<div class="container" id="content">
+    <div class="card" style="text-align:center;">Loading certificate details…</div>
+</div>
+
+<script>
+async function loadCertificate() {
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get('school');
+    const content = document.getElementById('content');
+
+    if (!slug) {
+        content.innerHTML = `<div class="card"><div class="not-verified">⚠ No certificate specified</div></div>`;
+        return;
+    }
+
+    try {
+        const res = await fetch('../data/schools.json');
+        const schools = await res.json();
+        const school = schools.find(s => s.slug === slug);
+
+        if (!school) {
+            content.innerHTML = `<div class="card"><div class="not-verified">✕ CERTIFICATE NOT FOUND</div><p style="text-align:center;margin-top:15px;">This link could not be verified. Please contact the issuing engineer.</p></div>`;
+            return;
+        }
+
+        let docsHtml = '';
+        school.documents.forEach(doc => {
+            const path = `../school/${school.folder}/${doc.file}`;
+            docsHtml += `
+                <div class="document">
+                    <div class="document-title">📄 ${doc.label}</div>
+                    <a class="button" href="${path}" target="_blank">View PDF</a>
+                    <a class="button secondary" href="${path}" download>Download PDF</a>
+                </div>`;
+        });
+
+        content.innerHTML = `
+            <div class="card">
+                <div class="verified">✓ CERTIFICATE VERIFIED</div>
+                <div class="info"><strong>School Name</strong>${school.schoolName}</div>
+                <div class="info"><strong>Certificate Type</strong>${school.certificateType}</div>
+                <div class="info"><strong>Certificate Number</strong>${school.certificateNumber}</div>
+                <div class="info"><strong>Inspection Date</strong>${school.inspectionDate}</div>
+                <div class="info"><strong>Valid Until</strong>${school.validUntil}</div>
+                <div class="info"><strong>Verification Status</strong>${school.status}</div>
+                <div class="documents">
+                    <h2>Official Documents</h2>
+                    ${docsHtml}
+                </div>
+            </div>
+            <a class="backlink" href="../index.html">← Back to Home / Search</a>
+            <div class="footer">
+                Official Building Fitness Certificate Verification System<br><br>
+                <strong>Verified by</strong><br>
+                Engr. Hassan Mehmood Subhani<br>
+                PEC No. Civil/56341
+            </div>`;
+    } catch (err) {
+        content.innerHTML = `<div class="card"><div class="not-verified">⚠ Error loading certificate data</div></div>`;
+    }
+}
+loadCertificate();
+</script>
+</body>
+</html>
