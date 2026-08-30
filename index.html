@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Building Fitness Certificate Verification</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: #f4f7fb; color: #1f2937; }
+.header { background: linear-gradient(135deg, #123c69, #0b6e4f); color: white; padding: 45px 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.header h1 { margin: 0; font-size: 32px; }
+.header p { margin: 8px 0 0; font-size: 15px; opacity: 0.9; }
+.container { max-width: 800px; margin: 35px auto; padding: 0 20px; }
+.card { background: white; border-radius: 14px; padding: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.08); }
+.card h2 { margin-top: 0; color: #123c69; font-size: 20px; }
+#searchBox { width: 100%; padding: 13px 16px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 15px; margin-bottom: 20px; }
+.document { border: 1px solid #e5e7eb; border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; background: #fafbfc; display: block; text-decoration: none; color: inherit; transition: box-shadow 0.15s; }
+.document:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.08); border-color: #c7d2e0; }
+.document-title { font-weight: bold; color: #123c69; }
+.document p { margin: 4px 0 0; color: #6b7280; font-size: 14px; }
+.footer { text-align: center; margin-top: 30px; padding: 25px 15px; color: #555; font-size: 14px; }
+.footer strong { color: #123c69; font-size: 16px; }
+</style>
+</head>
+<body>
+<div class="header">
+    <h1>Building Fitness Certificate</h1>
+    <p>Official Certificate Verification System</p>
+</div>
+<div class="container">
+    <div class="card">
+        <h2>Search a Certificate</h2>
+        <input type="text" id="searchBox" placeholder="Search by school name or certificate number...">
+        <div id="results">Loading…</div>
+    </div>
+    <div class="footer">
+        Official Building Fitness Certificate Verification System<br><br>
+        <strong>Verified by</strong><br>
+        Engr. Hassan Mehmood Subhani<br>
+        PEC No. Civil/56341
+    </div>
+</div>
+
+<script>
+let allSchools = [];
+
+async function init() {
+    const res = await fetch('./data/schools.json');
+    allSchools = await res.json();
+    renderResults(allSchools);
+}
+
+function renderResults(list) {
+    const results = document.getElementById('results');
+    if (list.length === 0) {
+        results.innerHTML = '<p style="color:#6b7280;">No certificates found.</p>';
+        return;
+    }
+    results.innerHTML = list.map(s => `
+        <a class="document" href="./verify/?school=${s.slug}">
+            <div class="document-title">🏫 ${s.schoolName}</div>
+            <p>Certificate No: ${s.certificateNumber}</p>
+        </a>
+    `).join('');
+}
+
+document.getElementById('searchBox').addEventListener('input', e => {
+    const q = e.target.value.toLowerCase();
+    const filtered = allSchools.filter(s =>
+        s.schoolName.toLowerCase().includes(q) ||
+        s.certificateNumber.toLowerCase().includes(q)
+    );
+    renderResults(filtered);
+});
+
+init();
+</script>
+</body>
+</html>
