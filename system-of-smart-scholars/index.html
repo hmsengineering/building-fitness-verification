@@ -1,1 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>Certificate Verification | System of Smart Scholars</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f3f6f9;
+    color: #1f2937;
+}
+
+.header {
+    background: linear-gradient(135deg, #0b3954, #145374);
+    color: white;
+    text-align: center;
+    padding: 32px 20px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 28px;
+    letter-spacing: 0.5px;
+}
+
+.header p {
+    margin: 8px 0 0;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.container {
+    max-width: 900px;
+    margin: 35px auto;
+    padding: 0 15px;
+}
+
+.card {
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.10);
+}
+
+.verification {
+    text-align: center;
+    padding: 35px 20px;
+}
+
+.check {
+    width: 68px;
+    height: 68px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    background: #dcfce7;
+    color: #15803d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.verification h2 {
+    margin: 0;
+    color: #15803d;
+    font-size: 27px;
+}
+
+.verification p {
+    color: #64748b;
+    margin-top: 8px;
+}
+
+.school {
+    text-align: center;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 28px 20px;
+}
+
+.school-label {
+    font-size: 13px;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.school h2 {
+    margin: 8px 0 0;
+    color: #0b3954;
+    font-size: 27px;
+}
+
+.section {
+    padding: 30px;
+}
+
+.section h3 {
+    color: #0b3954;
+    margin: 0 0 20px;
+    font-size: 21px;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 10px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.info-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 9px;
+    padding: 17px;
+}
+
+.label {
+    display: block;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.value {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.valid {
+    color: #15803d;
+}
+
+.documents {
+    padding: 0 30px 30px;
+}
+
+.document {
+    border: 1px solid #dbe3ea;
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 15px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.document-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.icon {
+    font-size: 30px;
+}
+
+.document-name {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.document-type {
+    color: #64748b;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.button {
+    background: #0b63ce;
+    color: white;
+    text-decoration: none;
+    padding: 11px 18px;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.button:hover {
+    background: #084c9e;
+}
+
+.notice {
+    margin: 0 30px 30px;
+    padding: 17px;
+    background: #f8fafc;
+    border-left: 4px solid #0b3954;
+    color: #475569;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+.footer {
+    background: #0b3954;
+    color: white;
+    text-align: center;
+    padding: 28px 20px;
+}
+
+.footer-title {
+    font-size: 13px;
+    opacity: 0.85;
+    margin-bottom: 7px;
+}
+
+.footer-name {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.footer-pec {
+    margin-top: 6px;
+    font-size: 14px;
+}
+
+.footer-bottom {
+    margin-top: 18px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+@media (max-width: 650px) {
+
+    .header h1 {
+        font-size: 22px;
+    }
+
+    .school h2 {
+        font-size: 22px;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .document {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .button {
+        width: 100%;
+        text-align: center;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+    <h1>BUILDING FITNESS CERTIFICATE</h1>
+    <p>Official Certificate Verification System</p>
+</header>
+
+<div class="container">
+
+<div class="card">
+
+    <div class="verification">
+
+        <div class="check">✓</div>
+
+        <h2>CERTIFICATE VERIFIED</h2>
+
+        <p>
+            This certificate has been successfully verified.
+        </p>
+
+    </div>
+
+
+    <div class="school">
+
+        <div class="school-label">
+            School / Institution
+        </div>
+
+        <h2>
+            System of Smart Scholars
+        </h2>
+
+    </div>
+
+
+    <div class="section">
+
+        <h3>Certificate Information</h3>
+
+        <div class="info-grid">
+
+            <div class="info-box">
+                <span class="label">School Name</span>
+                <span class="value">
+                    System of Smart Scholars
+                </span>
+            </div>
+
+            <div class="info-box">
+                <span class="label">Certificate Type</span>
+                <span class="value">
+                    Building Fitness Certificate
+                </span>
+            </div>
+
+            <div class="info-box">
+                <span class="label">Verification Status</span>
+                <span class="value valid">
+                    ✓ Valid / Verified
+                </span>
+            </div>
+
+            <div class="info-box">
+                <span class="label">Record Status</span>
+                <span class="value">
+                    Official Record
+                </span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="documents">
+
+        <h3>Official Documents</h3>
+
+
+        <!-- SCHOOL DOCUMENT -->
+
+        <div class="document">
+
+            <div class="document-info">
+
+                <div class="icon">📄</div>
+
+                <div>
+
+                    <div class="document-name">
+                        System of Smart Scholars
+                    </div>
+
+                    <div class="document-type">
+                        Official School Document — PDF
+                    </div>
+
+                </div>
+
+            </div>
+
+            <a
+                class="button"
+                href="../SYSTEM%20OF%20SMART%20SCHOLARS.pdf"
+                target="_blank">
+                View / Download
+            </a>
+
+        </div>
+
+
+        <!-- SCHOOL DOCUMENT - CL -->
+
+        <div class="document">
+
+            <div class="document-info">
+
+                <div class="icon">📄</div>
+
+                <div>
+
+                    <div class="document-name">
+                        System of Smart Scholars (CL)
+                    </div>
+
+                    <div class="document-type">
+                        Additional Official Document — PDF
+                    </div>
+
+                </div>
+
+            </div>
+
+            <a
+                class="button"
+                href="../SYSTEM%20OF%20SMART%20SCHOLARS%20%28CL%29.pdf"
+                target="_blank">
+                View / Download
+            </a>
+
+        </div>
+
+
+        <!-- BUILDING FITNESS CERTIFICATE -->
+
+        <div class="document">
+
+            <div class="document-info">
+
+                <div class="icon">📜</div>
+
+                <div>
+
+                    <div class="document-name">
+                        Building Fitness Certificate
+                    </div>
+
+                    <div class="document-type">
+                        Official Certificate — PDF
+                    </div>
+
+                </div>
+
+            </div>
+
+            <a
+                class="button"
+                href="../Building%20Fitness%20certificate.pdf"
+                target="_blank">
+                View / Download
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="notice">
+
+        <strong>Verification Notice:</strong><br>
+
+        This page provides an official online verification
+        record for the Building Fitness Certificate of
+        <strong>System of Smart Scholars</strong>.
+        The documents displayed above form part of the
+        verification record.
+
+    </div>
+
+
+    <footer class="footer">
+
+        <div class="footer-title">
+            Verified By
+        </div>
+
+        <div class="footer-name">
+            Engr. Hassan Mehmood Subhani
+        </div>
+
+        <div class="footer-pec">
+            PEC No. Civil/56341
+        </div>
+
+        <div class="footer-bottom">
+            Official Building Fitness Certificate Verification System
+        </div>
+
+    </footer>
+
+</div>
+
+</div>
+
+</body>
+</html>
