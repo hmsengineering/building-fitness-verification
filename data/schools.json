@@ -1,1 +1,17 @@
-
+[
+  {
+    "slug": "system-of-smart-scholars",
+    "folder": "system-of-smart-scholars",
+    "schoolName": "System of Smart Scholars",
+    "certificateType": "Building Fitness Certificate",
+    "certificateNumber": "BFC-2026-001",
+    "inspectionDate": "29 August 2026",
+    "validUntil": "29 August 2028",
+    "status": "Valid / Verified",
+    "documents": [
+      { "label": "Building Fitness Certificate", "file": "Building-Fitness-Certificate.pdf" },
+      { "label": "System of Smart Scholars", "file": "System-of-Smart-Scholars.pdf" },
+      { "label": "System of Smart Scholars (CL)", "file": "System-of-Smart-Scholars-CL.pdf" }
+    ]
+  }
+]
