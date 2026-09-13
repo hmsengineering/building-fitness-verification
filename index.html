@@ -73,7 +73,7 @@ body{margin:0;font-family:'Inter',Arial,sans-serif;color:var(--ink);
 let allSchools = [];
 
 async function init() {
-  const res = await fetch('./data/schools.json');
+  const res = await fetch('./data/schools.json?t=' + Date.now());
   allSchools = await res.json();
   renderResults(allSchools);
 }
