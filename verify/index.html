@@ -94,7 +94,7 @@ async function loadCertificate() {
   }
 
   try {
-    const res = await fetch('../data/schools.json');
+    const res = await fetch('../data/schools.json?t=' + Date.now());
     const schools = await res.json();
     const school = schools.find(s => s.slug === slug);
 
