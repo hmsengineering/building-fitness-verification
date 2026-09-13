@@ -100,11 +100,11 @@ button:disabled{background:#9ca3af;cursor:not-allowed;}
     <div class="row2">
       <div class="field">
         <label>Inspection Date</label>
-        <input type="text" id="inspectionDate" placeholder="29 August 2026">
+        <input type="date" id="inspectionDate">
       </div>
       <div class="field">
         <label>Valid Until</label>
-        <input type="text" id="validUntil" placeholder="29 August 2028">
+        <input type="date" id="validUntil">
       </div>
     </div>
 
@@ -146,6 +146,13 @@ function slugify(str){
 function autoSlug(){
   const name = document.getElementById('schoolName').value;
   document.getElementById('slug').value = slugify(name);
+}
+
+function formatDateDisplay(isoDate){
+  if(!isoDate) return '';
+  const d = new Date(isoDate + 'T00:00:00');
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
 }
 
 function fileToBase64(file){
@@ -222,8 +229,8 @@ async function submitCertificate(){
       address: document.getElementById('address').value.trim(),
       certificateType: "Building Fitness Certificate",
       certificateNumber: certNumber,
-      inspectionDate: document.getElementById('inspectionDate').value.trim(),
-      validUntil: document.getElementById('validUntil').value.trim(),
+      inspectionDate: formatDateDisplay(document.getElementById('inspectionDate').value),
+      validUntil: formatDateDisplay(document.getElementById('validUntil').value),
       status: document.getElementById('status').value,
       documents: [
         { label: "Building Fitness Certificate", file: file1Name },
