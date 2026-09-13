@@ -18,6 +18,7 @@ body{margin:0;font-family:'Inter',Arial,sans-serif;color:var(--ink);background:v
 .field{margin-bottom:16px;}
 label{display:block;font-size:12.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;}
 input,select{width:100%;padding:11px 13px;border:1px solid #d1d5db;border-radius:8px;font-size:14.5px;font-family:inherit;}
+input[type=file]{padding:9px;}
 input:focus,select:focus{outline:2px solid #cddcfa;border-color:var(--accent);}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .section-title{font-size:13px;font-weight:700;color:var(--navy);margin:22px 0 12px;padding-top:14px;border-top:1px solid var(--line);text-transform:uppercase;letter-spacing:.4px;}
@@ -30,6 +31,7 @@ button:disabled{background:#9ca3af;cursor:not-allowed;}
 .msg.error{display:block;background:#fdecea;color:#b42318;border:1px solid #f5c2be;}
 .hint{font-size:12px;color:var(--muted);margin-top:4px;}
 .tokenbox{background:#fff8e6;border:1px solid #f5d98b;border-radius:10px;padding:14px;margin-bottom:20px;font-size:13px;color:#7a5c00;}
+.progress{font-size:13px;color:var(--muted);margin-top:10px;}
 </style>
 </head>
 <body>
@@ -106,26 +108,29 @@ button:disabled{background:#9ca3af;cursor:not-allowed;}
       </div>
     </div>
 
-    <div class="section-title">Folder &amp; Files</div>
+    <div class="section-title">Folder Name (auto-generated)</div>
     <div class="field">
-      <label>Folder Name (slug — auto-filled, no spaces)</label>
+      <label>Slug / Folder Name</label>
       <input type="text" id="slug" placeholder="oxford-science-school">
-      <div class="hint">Must exactly match the folder name you create under school/</div>
-    </div>
-    <div class="field">
-      <label>PDF Filename — Building Fitness Certificate</label>
-      <input type="text" id="file1" value="Building-Fitness-Certificate.pdf">
-    </div>
-    <div class="field">
-      <label>PDF Filename — School Document</label>
-      <input type="text" id="file2" placeholder="Oxford-Science-School.pdf">
-    </div>
-    <div class="field">
-      <label>PDF Filename — School Document (CL)</label>
-      <input type="text" id="file3" placeholder="Oxford-Science-School-CL.pdf">
+      <div class="hint">This will be created automatically as school/&lt;slug&gt;/ — you don't need to create it yourself.</div>
     </div>
 
-    <button onclick="submitCertificate()" id="submitBtn">Add Certificate to Database</button>
+    <div class="section-title">Upload the 3 PDFs</div>
+    <div class="field">
+      <label>1. Building Fitness Certificate (PDF)</label>
+      <input type="file" id="pdf1" accept="application/pdf">
+    </div>
+    <div class="field">
+      <label>2. School Document (PDF)</label>
+      <input type="file" id="pdf2" accept="application/pdf">
+    </div>
+    <div class="field">
+      <label>3. School Document — CL (PDF)</label>
+      <input type="file" id="pdf3" accept="application/pdf">
+    </div>
+
+    <button onclick="submitCertificate()" id="submitBtn">Add Certificate + Upload PDFs</button>
+    <div class="progress" id="progress"></div>
     <div id="msg" class="msg"></div>
   </div>
 </div>
@@ -140,54 +145,93 @@ function slugify(str){
 
 function autoSlug(){
   const name = document.getElementById('schoolName').value;
-  const slug = slugify(name);
-  document.getElementById('slug').value = slug;
-  if(name){
-    const titleCase = name.split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join('-');
-    document.getElementById('file2').value = titleCase + '.pdf';
-    document.getElementById('file3').value = titleCase + '-CL.pdf';
+  document.getElementById('slug').value = slugify(name);
+}
+
+function fileToBase64(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function safeFilename(name){
+  return name.trim().replace(/\s+/g,'-').replace(/[^a-zA-Z0-9.\-]/g,'');
+}
+
+async function uploadFileToRepo(token, path, base64Content, commitMsg){
+  const apiUrl = `https://api.github.com/repos/${REPO}/contents/${path}`;
+  const res = await fetch(apiUrl, {
+    method: 'PUT',
+    headers: { Authorization: `token ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: commitMsg, content: base64Content })
+  });
+  if(!res.ok){
+    const err = await res.json();
+    throw new Error(`Failed to upload ${path}: ${err.message || 'unknown error'}`);
   }
 }
 
 async function submitCertificate(){
   const btn = document.getElementById('submitBtn');
   const msg = document.getElementById('msg');
-  msg.className = 'msg'; msg.style.display='none';
+  const progress = document.getElementById('progress');
+  msg.className = 'msg'; msg.style.display='none'; progress.textContent = '';
 
   const token = document.getElementById('token').value.trim();
   const schoolName = document.getElementById('schoolName').value.trim();
   const slug = document.getElementById('slug').value.trim();
   const certNumber = document.getElementById('certNumber').value.trim();
+  const pdf1 = document.getElementById('pdf1').files[0];
+  const pdf2 = document.getElementById('pdf2').files[0];
+  const pdf3 = document.getElementById('pdf3').files[0];
 
-  if(!token || !schoolName || !slug || !certNumber){
+  if(!token || !schoolName || !slug || !certNumber || !pdf1 || !pdf2 || !pdf3){
     msg.className='msg error'; msg.style.display='block';
-    msg.textContent = 'Please fill Token, School Name, Slug, and Certificate Number at minimum.';
+    msg.textContent = 'Please fill Token, School Name, Certificate Number, and select all 3 PDF files.';
     return;
   }
 
-  const newEntry = {
-    slug: slug,
-    folder: slug,
-    schoolName: schoolName,
-    schoolLevel: document.getElementById('schoolLevel').value,
-    schoolGender: document.getElementById('schoolGender').value,
-    ownerName: document.getElementById('ownerName').value.trim(),
-    address: document.getElementById('address').value.trim(),
-    certificateType: "Building Fitness Certificate",
-    certificateNumber: certNumber,
-    inspectionDate: document.getElementById('inspectionDate').value.trim(),
-    validUntil: document.getElementById('validUntil').value.trim(),
-    status: document.getElementById('status').value,
-    documents: [
-      { label: "Building Fitness Certificate", file: document.getElementById('file1').value.trim() },
-      { label: schoolName, file: document.getElementById('file2').value.trim() },
-      { label: schoolName + " (CL)", file: document.getElementById('file3').value.trim() }
-    ]
-  };
-
-  btn.disabled = true; btn.textContent = 'Saving...';
+  btn.disabled = true; btn.textContent = 'Uploading...';
 
   try {
+    const file1Name = safeFilename(pdf1.name);
+    const file2Name = safeFilename(pdf2.name);
+    const file3Name = safeFilename(pdf3.name);
+
+    progress.textContent = 'Uploading file 1 of 3...';
+    await uploadFileToRepo(token, `school/${slug}/${file1Name}`, await fileToBase64(pdf1), `Add ${file1Name} for ${schoolName}`);
+
+    progress.textContent = 'Uploading file 2 of 3...';
+    await uploadFileToRepo(token, `school/${slug}/${file2Name}`, await fileToBase64(pdf2), `Add ${file2Name} for ${schoolName}`);
+
+    progress.textContent = 'Uploading file 3 of 3...';
+    await uploadFileToRepo(token, `school/${slug}/${file3Name}`, await fileToBase64(pdf3), `Add ${file3Name} for ${schoolName}`);
+
+    progress.textContent = 'Updating certificate database...';
+
+    const newEntry = {
+      slug: slug,
+      folder: slug,
+      schoolName: schoolName,
+      schoolLevel: document.getElementById('schoolLevel').value,
+      schoolGender: document.getElementById('schoolGender').value,
+      ownerName: document.getElementById('ownerName').value.trim(),
+      address: document.getElementById('address').value.trim(),
+      certificateType: "Building Fitness Certificate",
+      certificateNumber: certNumber,
+      inspectionDate: document.getElementById('inspectionDate').value.trim(),
+      validUntil: document.getElementById('validUntil').value.trim(),
+      status: document.getElementById('status').value,
+      documents: [
+        { label: "Building Fitness Certificate", file: file1Name },
+        { label: schoolName, file: file2Name },
+        { label: schoolName + " (CL)", file: file3Name }
+      ]
+    };
+
     const apiUrl = `https://api.github.com/repos/${REPO}/contents/${FILE_PATH}`;
     const getRes = await fetch(apiUrl, { headers: { Authorization: `token ${token}` } });
     if(!getRes.ok) throw new Error('Could not read schools.json — check your token permissions.');
@@ -215,16 +259,18 @@ async function submitCertificate(){
 
     if(!putRes.ok){
       const err = await putRes.json();
-      throw new Error(err.message || 'Failed to save.');
+      throw new Error(err.message || 'Failed to save schools.json.');
     }
 
+    progress.textContent = '';
     msg.className = 'msg success'; msg.style.display='block';
-    msg.innerHTML = `✅ Added successfully! Now create folder <b>school/${slug}/</b> and upload the 3 PDFs there.<br><br>Verification URL: <br><code>https://hmsengineering.github.io/building-fitness-verification/verify/?school=${slug}</code>`;
+    msg.innerHTML = `✅ Done! Folder <b>school/${slug}/</b> created with all 3 PDFs, and certificate added.<br><br>Verification URL:<br><code>https://hmsengineering.github.io/building-fitness-verification/verify/?school=${slug}</code><br><br>It may take 1-2 minutes for GitHub Pages to update.`;
   } catch(err){
+    progress.textContent = '';
     msg.className = 'msg error'; msg.style.display='block';
     msg.textContent = '❌ ' + err.message;
   } finally {
-    btn.disabled = false; btn.textContent = 'Add Certificate to Database';
+    btn.disabled = false; btn.textContent = 'Add Certificate + Upload PDFs';
   }
 }
 </script>
