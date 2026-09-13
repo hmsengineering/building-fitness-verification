@@ -9,9 +9,46 @@
     "validUntil": "29 August 2028",
     "status": "Valid / Verified",
     "documents": [
-      { "label": "Building Fitness Certificate", "file": "Building-Fitness-Certificate.pdf" },
-      { "label": "System of Smart Scholars", "file": "System-of-Smart-Scholars.pdf" },
-      { "label": "System of Smart Scholars (CL)", "file": "System-of-Smart-Scholars-CL.pdf" }
+      {
+        "label": "Building Fitness Certificate",
+        "file": "Building-Fitness-Certificate.pdf"
+      },
+      {
+        "label": "System of Smart Scholars",
+        "file": "System-of-Smart-Scholars.pdf"
+      },
+      {
+        "label": "System of Smart Scholars (CL)",
+        "file": "System-of-Smart-Scholars-CL.pdf"
+      }
+    ]
+  },
+  {
+    "slug": "oxford-science-school",
+    "folder": "oxford-science-school",
+    "schoolName": "Oxford Science School",
+    "schoolLevel": "Primary",
+    "schoolGender": "Mixed / Co-education",
+    "ownerName": "MUHAMMAD RAMZAN",
+    "address": "NATHAY WALA KAHROR PACCA",
+    "certificateType": "Building Fitness Certificate",
+    "certificateNumber": "BFC-2026-002",
+    "inspectionDate": "13 September 2026",
+    "validUntil": "13 September 2027",
+    "status": "Valid / Verified",
+    "documents": [
+      {
+        "label": "Building Fitness Certificate",
+        "file": "Building-Fitness-Certificate.pdf"
+      },
+      {
+        "label": "Oxford Science School",
+        "file": "Oxford-Science-School.pdf"
+      },
+      {
+        "label": "Oxford Science School (CL)",
+        "file": "Oxford-Science-School-CL.pdf"
+      }
     ]
   }
 ]
